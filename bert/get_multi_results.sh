@@ -1,5 +1,6 @@
 #! /bin/bash 
 # Author: MB
+# For running multiple SBERT models
 
 #rootdir="/srv/data/gusbohom/root"
 rootdir="/home/max"

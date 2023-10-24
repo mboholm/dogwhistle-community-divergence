@@ -1,4 +1,5 @@
-#import click # mb
+# Original code from: https://github.com/GU-CLASP/semantic-shift-in-social-networks
+
 import argparse # mb
 import numpy as np
 import pandas as pd
@@ -42,17 +43,14 @@ def cosine_change(wv1, wv2, vocab=None):
         vecs2 = np.stack([wv2[w] for w in common_vocab])
     # vocabs are different; restrict vectors to intersection
 
-    elif wv1.index2word != wv2.index2word:      #mb. replaced this
-    #elif wv1.index_to_key != wv2.index_to_key:   #mb. ... with this
-        common_vocab = [w for w in wv1.index2word if w in wv2.index2word]      #mb. replaced this
-        #common_vocab = [w for w in wv1.index_to_key if w in wv2.index_to_key]   #mb. ... with this; mb. intersection
+    elif wv1.index2word != wv2.index2word:      
+        common_vocab = [w for w in wv1.index2word if w in wv2.index2word]      
 
         vecs1 = np.stack([wv1[w] for w in common_vocab])                       
         vecs2 = np.stack([wv2[w] for w in common_vocab])
     # vocabs are the same; use full vector matrices
     else:
-        common_vocab = wv1.index2word   #mb. replaced this
-        #common_vocab = wv1.index_to_key   #mb. ... with this
+        common_vocab = wv1.index2word   
         vecs1 = wv1.vectors
         vecs2 = wv2.vectors
         
@@ -90,13 +88,6 @@ def neighborhood_change(wv_t1, wv_t2, vocab, neighborhood_size=25):
         change[w] = angular_distance(meta_t1, meta_t2)
     return change
 
-
-#@click.command()
-#@click.argument("model1")
-#@click.argument("model2")
-#@click.argument("change_file")
-# mb. changed to argparse
-
 def measure(model1, model2, change_file, mode="change"):
 
     # Compute change on the genuine condition 
@@ -107,16 +98,13 @@ def measure(model1, model2, change_file, mode="change"):
         change = cosine_change(wv1, wv2) # mb
 
     if mode == "similarity":             # mb
-        #if wv1.index_to_key != wv2.index_to_key:
         if wv1.index2word != wv2.index2word:                                   #mb. 
             common_vocab = [w for w in wv1.index2word if w in wv2.index2word]
-            #common_vocab = [w for w in wv1.index_to_key if w in wv2.index_to_key]  #mb.
             vecs1 = np.stack([wv1[w] for w in common_vocab])                       #mb 
             vecs2 = np.stack([wv2[w] for w in common_vocab])                       #mb
         # vocabs are the same; use full vector matrices                            
         else:
             common_vocab = wv1.index2word
-            #common_vocab = wv1.index_to_key                                        #mb
             vecs1 = wv1.vectors                                                    #mb
             vecs2 = wv2.vectors                                                    #mb
 
@@ -127,7 +115,6 @@ def measure(model1, model2, change_file, mode="change"):
 
 if __name__ == '__main__':
 
-    # mb changed to argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("model1", type=str, help="model1")
     parser.add_argument("model2", type=str, help="model2")
